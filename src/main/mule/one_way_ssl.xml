@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b4d2d7e3-3a23-43d9-a211-4e6fbc58f7a3" >
+		<http:listener-connection protocol="HTTPS" host="0.0.0.0" port="8082" >
+			<tls:context >
+				<tls:trust-store type="jks" />
+				<tls:key-store path="server-keystore.jks" keyPassword="mulesoft" password="mulesoft" alias="mule-server"/>
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="035cc833-3e2f-44cd-9e28-35993799ed7a" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="d6c2b3cd-5239-4d97-a635-1689de1d74af">
+		<http:request-connection protocol="HTTPS" host="localhost" port="8082" >
+		</http:request-connection>
+	</http:request-config>
+	<flow name="one_way_sslFlow" doc:id="d3286344-c4b4-47cb-b8ab-e223495a7057" >
+		<http:listener doc:name="Listener" doc:id="b6e2e561-e858-471c-bfe4-2b9c857742e0" config-ref="HTTP_Listener_config" path="/add"/>
+		<set-payload value='#[payload]' doc:name="Set Payload" doc:id="b0a72415-82a0-44db-bd83-cbbbcb3d024a" />
+	</flow>
+	<flow name="one_way_sslFlow1" doc:id="c2fce39a-7b97-4823-970a-41e804ee15af" >
+		<http:listener doc:name="Listener" doc:id="c7bd65e7-9a96-4250-857d-eaaf4b4e2908" config-ref="HTTP_Listener_config1" path="/test"/>
+		<http:request method="POST" doc:name="Request" doc:id="e7d32398-9d06-4dea-bf8d-af61968e2d9e" config-ref="HTTP_Request_configuration" path="/add"/>
+	</flow>
+</mule>
